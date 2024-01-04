@@ -3,10 +3,25 @@ import pathlib
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.routing import APIRoute
 from starlette.requests import Request
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+
+
+# async def fastapi_index():
+#     return JSONResponse({"index": "fastapi_index"})
+#
+#
+# async def fastapi_about():
+#     return JSONResponse({"about": "fastapi_about"})
+#
+#
+# routers = [
+#     APIRoute(path="/fastapi/index", endpoint=fastapi_index, methods=["GET", "POST"]),
+#     APIRoute(path="/fastapi/about", endpoint=fastapi_about, methods=["GET", "POST"]),
+# ]
 
 app = FastAPI(title="学习FastAPI框架文档", description="以下是关于框架文档的介绍和描述", version="0.0.1",
               # debug=True,
@@ -26,6 +41,8 @@ app = FastAPI(title="学习FastAPI框架文档", description="以下是关于框
               # redoc_url=None, # 关闭redoc访问
               # openapi_url=None, #文档全部关闭访问
               )
+
+# app = FastAPI(routers=routers)  # 全局routers参数
 
 templates = Jinja2Templates(directory=f"{pathlib.Path.cwd()}/templates/")
 staticfiles = StaticFiles(directory=f"{pathlib.Path.cwd()}/static/")
