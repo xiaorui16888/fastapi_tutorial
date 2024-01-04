@@ -3,7 +3,7 @@ import pathlib
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.routing import APIRoute
+from fastapi.routing import APIRouter
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
@@ -58,6 +58,32 @@ templates = Jinja2Templates(directory=f"{pathlib.Path.cwd()}/templates/")
 staticfiles = StaticFiles(directory=f"{pathlib.Path.cwd()}/static/")
 
 app.mount("/static", staticfiles, name="static")
+
+# 路由注册方式
+router_user = APIRouter(prefix="/user", tags=["用户模块"])
+router_pay = APIRouter(prefix="/pay", tags=["支付模块"])
+
+
+@router_user.get("/user/login")
+def user_login():
+    return {"ok": "登录成功"}
+
+
+@router_pay.get("/pay/order")
+def pay_order():
+    return {"ok": "订单支付成功"}
+
+
+# TODO:会有告警，想不通...UserWarning: Duplicate Operation ID user_info_user_user_user_info_post for function user_info at /Users/safety/PycharmProjects/fastapi_tutorial/main.py
+#   warnings.warn(message, stacklevel=1)
+@router_user.api_route("/user/user_info", methods=["POST", "GET"])  # 支持多个请求方法
+def user_info():
+    return {"ok": "查看用户信息"}
+
+
+# 添加路由分组
+app.include_router(router_pay)
+app.include_router(router_user)
 
 
 @app.get("/app/hello", tags=["app实例对象注册接口--示例"])
