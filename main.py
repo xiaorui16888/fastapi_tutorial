@@ -23,6 +23,15 @@ from starlette.templating import Jinja2Templates
 #     APIRoute(path="/fastapi/about", endpoint=fastapi_about, methods=["GET", "POST"]),
 # ]
 
+async def exception_not_found(request, exc):
+    return JSONResponse({"code": exc.status_code, "error": "没有定义这个请求地址"},
+                        status_code=exc.status_code)
+
+
+exception_handlers = {
+    404: exception_not_found
+}
+
 app = FastAPI(title="学习FastAPI框架文档", description="以下是关于框架文档的介绍和描述", version="0.0.1",
               # debug=True,
               terms_of_service="https://terms.团队的官网网站/",
@@ -40,6 +49,7 @@ app = FastAPI(title="学习FastAPI框架文档", description="以下是关于框
               # docs_url=None,  # 关闭docs访问
               # redoc_url=None, # 关闭redoc访问
               # openapi_url=None, #文档全部关闭访问
+              exception_handlers=exception_handlers  # 定义异常捕捉处理器
               )
 
 # app = FastAPI(routers=routers)  # 全局routers参数
