@@ -9,7 +9,6 @@ from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-
 # async def fastapi_index():
 #     return JSONResponse({"index": "fastapi_index"})
 #
@@ -22,6 +21,8 @@ from starlette.templating import Jinja2Templates
 #     APIRoute(path="/fastapi/index", endpoint=fastapi_index, methods=["GET", "POST"]),
 #     APIRoute(path="/fastapi/about", endpoint=fastapi_about, methods=["GET", "POST"]),
 # ]
+from sty_route import sty_route_app
+
 
 async def exception_not_found(request, exc):
     return JSONResponse({"code": exc.status_code, "error": "没有定义这个请求地址"},
@@ -84,6 +85,8 @@ def user_info():
 # 添加路由分组
 app.include_router(router_pay)
 app.include_router(router_user)
+
+app.include_router(sty_route_app)
 
 
 @app.get("/app/hello", tags=["app实例对象注册接口--示例"])
