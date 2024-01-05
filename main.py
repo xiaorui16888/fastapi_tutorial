@@ -4,11 +4,13 @@ import pathlib
 import uvicorn
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
+from starlette.middleware.wsgi import WSGIMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from sty_mount_flask import flask_app
 # async def fastapi_index():
 #     return JSONResponse({"index": "fastapi_index"})
 #
@@ -22,6 +24,7 @@ from starlette.templating import Jinja2Templates
 #     APIRoute(path="/fastapi/about", endpoint=fastapi_about, methods=["GET", "POST"]),
 # ]
 from sty_route import sty_route_app
+from sty_sub_app import sub_app
 
 
 async def exception_not_found(request, exc):
@@ -59,6 +62,12 @@ templates = Jinja2Templates(directory=f"{pathlib.Path.cwd()}/templates/")
 staticfiles = StaticFiles(directory=f"{pathlib.Path.cwd()}/static/")
 
 app.mount("/static", staticfiles, name="static")
+
+# 挂载子应用
+app.mount(path="/sub_app", app=sub_app, name='sub_app')
+
+# 挂载其他WSGI应用
+app.mount(path="/flask_app", app=WSGIMiddleware(flask_app), name="flask_app")
 
 # 路由注册方式
 router_user = APIRouter(prefix="/user", tags=["用户模块"])
